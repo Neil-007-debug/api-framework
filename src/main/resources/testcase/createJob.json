@@ -1,0 +1,65 @@
+{
+  "name": "",
+  "description": "",
+  "baseUrl": "",
+  "type": "integration",
+  "variables": [],
+  "headers": {
+
+  },
+  "initMethod": [],
+  "testsuite": [
+    {
+      "test": {
+        "type": "sync",
+        "request": {
+          "params": {
+
+          },
+          "headers": {
+
+          },
+          "url": "",
+          "method": ""
+        },
+        "validate": [
+          {
+            "eq": []
+          }
+        ],
+        "extract": []
+
+      }
+    },
+    {
+      "test": {
+        "type": "async",
+        "loop": {
+          "interval": 10,
+          "maxWaitingTime": 1000,
+          "endCondition": {
+
+          }
+        },
+        "request": {
+          "params": {
+
+          },
+          "headers": {
+
+          },
+          "url": "",
+          "method": ""
+        },
+        "validate": [
+          {
+            "eq": []
+          }
+        ],
+        "extract": []
+
+      }
+    }
+  ]
+
+}

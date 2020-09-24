@@ -1,0 +1,34 @@
+{
+  "name": "",
+  "description": "",
+  "type": "regression",
+  "baseUrl": "",
+  "variables": [],
+  "headers": {
+
+  },
+  "initMethod": [],
+  "testsuite": [
+    {
+      "test": {
+        "type": "sync",
+        "dataProvider": "",
+        "request": {
+          "params": {
+
+          },
+          "headers": {
+
+          },
+          "url": "",
+          "method": ""
+        },
+        "validate": [
+          {
+            "eq": []
+          }
+        ]
+      }
+    }
+  ]
+}
