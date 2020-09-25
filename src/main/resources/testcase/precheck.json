@@ -1,0 +1,61 @@
+{
+  "name": "precheck job create template",
+  "description": "",
+  "baseUrl": "https://core.qa.bulk.refinitiv.com",
+  "type": "integration",
+  "dataProvider": "commonJobDataProvider",
+  "variables": [],
+  "headers": {
+  },
+  "initMethod": [
+    "setHttpClient"
+  ],
+  "testsuite": [
+    {
+      "test": {
+        "type": "sync",
+        "request": {
+          "params": {
+          },
+          "headers": {
+          },
+          "url": "${baseUrl}/jobs",
+          "method": "post"
+        },
+        "validate": [
+          {
+          }
+        ],
+        "extract": [
+          {
+            "jobId": "$.id"
+          }
+        ]
+      }
+    },
+    {
+      "test": {
+        "type": "sync",
+        "request": {
+          "params": {
+          },
+          "headers": {
+          },
+          "url": "${baseUrl}/status/${jobId}",
+          "method": "get"
+        },
+        "validate": {
+          "eq": [
+            {
+              "$.status": "failed"
+            }
+          ],
+          "contains": [
+            "Pre-Check s3 bucket failed"
+          ]
+        },
+        "extract": []
+      }
+    }
+  ]
+}

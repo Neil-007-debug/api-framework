@@ -3,6 +3,7 @@
   "description": "",
   "baseUrl": "",
   "type": "integration",
+  "dataProvider": "",
   "variables": [],
   "headers": {
 
