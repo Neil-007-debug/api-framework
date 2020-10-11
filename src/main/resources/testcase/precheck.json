@@ -4,7 +4,7 @@
   "baseUrl": "https://core.qa.bulk.refinitiv.com",
   "type": "integration",
   "dataProvider": "commonJobDataProvider",
-  "variables": [],
+  "variables": {},
   "headers": {
   },
   "initMethod": [
@@ -12,50 +12,46 @@
   ],
   "testsuite": [
     {
-      "test": {
-        "type": "sync",
-        "request": {
-          "params": {
-          },
-          "headers": {
-          },
-          "url": "${baseUrl}/jobs",
-          "method": "post"
+      "name": "",
+      "type": "sync",
+      "request": {
+        "params": {
         },
-        "validate": [
-          {
-          }
-        ],
-        "extract": [
-          {
-            "jobId": "$.id"
-          }
-        ]
+        "headers": {
+        },
+        "url": "${baseUrl}/jobs",
+        "method": "post"
+      },
+      "validate": [
+        {
+        }
+      ],
+      "extract": {
+        "jobId": "$.id"
       }
     },
     {
-      "test": {
-        "type": "sync",
-        "request": {
-          "params": {
-          },
-          "headers": {
-          },
-          "url": "${baseUrl}/status/${jobId}",
-          "method": "get"
+      "name": "",
+      "type": "sync",
+      "request": {
+        "params": {
         },
-        "validate": {
-          "eq": [
-            {
-              "$.status": "failed"
-            }
-          ],
-          "contains": [
-            "Pre-Check s3 bucket failed"
-          ]
+        "headers": {
         },
-        "extract": []
-      }
+        "url": "${baseUrl}/status/${jobId}",
+        "method": "get"
+      },
+      "validate": {
+        "eq": [
+          {
+            "$.status": "failed"
+          }
+        ],
+        "contains": [
+          "Pre-Check s3 bucket failed"
+        ]
+      },
+      "extract": {}
     }
   ]
 }
