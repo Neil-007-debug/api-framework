@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 public class Variables {
 
     @Getter
@@ -16,4 +15,8 @@ public class Variables {
     @Setter
     private JSONObject processVariables;
 
+    public Variables() {
+        environmentVariables=new JSONObject();
+        processVariables=new JSONObject();
+    }
 }

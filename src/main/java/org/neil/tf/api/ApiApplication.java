@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONReader;
 import javafx.application.Application;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.neil.tf.api.core.Runner;
+import org.neil.tf.api.core.bean.Variables;
 import org.neil.tf.api.utils.ApplicationContextGetBeanHelper;
 import org.neil.tf.api.utils.JsonReaderUtil;
 import org.springframework.boot.SpringApplication;
@@ -18,10 +19,15 @@ public class ApiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
-        Runner runner= (Runner) ApplicationContextGetBeanHelper.getBean("Runner");
-        String environmentConfigFile="testcase/environment.json";
-        String jobConfigFile="testcase/precheck.json";
-        runner.run(JsonReaderUtil.readJsonFile(environmentConfigFile),JsonReaderUtil.readJsonFile(jobConfigFile));
+        Runner runner = (Runner) ApplicationContextGetBeanHelper.getBean("Runner");
+        String environmentConfigFile = "testcase/environment.json";
+        String jobConfigFile = "testcase/precheck.json";
+        Variables globalVariables = new Variables();
+        try {
+            runner.run(globalVariables, JsonReaderUtil.readJsonFile(environmentConfigFile), JsonReaderUtil.readJsonFile(jobConfigFile));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

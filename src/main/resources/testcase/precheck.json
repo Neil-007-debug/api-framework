@@ -2,8 +2,8 @@
   "name": "precheck job create template",
   "description": "",
   "baseUrl": "https://core.qa.bulk.refinitiv.com",
-  "type": "integration",
-  "dataProvider": "commonJobDataProvider",
+  "type": "regression",
+  "dataProvider": "",
   "variables": {},
   "headers": {
   },
