@@ -52,6 +52,7 @@ public class Runner {
                 regressionStart(job,variables);
                 break;
             case "integration":
+                integrationStart(job,variables);
                 break;
         }
     }
