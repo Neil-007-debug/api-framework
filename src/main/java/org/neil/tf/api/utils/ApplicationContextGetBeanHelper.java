@@ -12,7 +12,7 @@ public class ApplicationContextGetBeanHelper implements ApplicationContextAware 
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        ApplicationContextGetBeanHelper.applicationContext = applicationContext;
     }
 
     public static Object getBean(String className) throws BeansException,IllegalArgumentException {

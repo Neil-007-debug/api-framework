@@ -61,7 +61,7 @@ public class Runner {
         for (int i=0;i<jobArray.size();i++){
             JobDetail jobDetail= new JobDetail(jobArray.getJSONObject(i));
             jobDetail.setName(jobDetail.getName()+"--"+i);
-            List requestInformationList=requestGenerateService.generate(job,jobDetail);
+            List requestInformationList=requestGenerateService.regressionGenerate(job,jobDetail);
             for (int j=0;j<requestInformationList.size();j++){
                 JSONObject jsonObject= (JSONObject) requestInformationList.get(j);
                 requestService.sendRequest(jsonObject);
@@ -69,7 +69,16 @@ public class Runner {
         }
     }
 
-    public void integrationStart(){
+    public void integrationStart(Job job,Variables variables) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
+        JSONArray jobArray=job.getTestsuite();
+        JobDetail jobDetail=new JobDetail(jobArray.getJSONObject(0));
+        List firstRequests=requestGenerateService.intregrationGenerate(job,jobDetail);
+        for (int i=0;i<firstRequests.size();i++){
+            JSONObject jsonObject= (JSONObject) firstRequests.get(i);
+            requestService.sendRequest(jsonObject);
+            for (int j=1;j<jobArray.size();j++){
 
+            }
+        }
     }
 }

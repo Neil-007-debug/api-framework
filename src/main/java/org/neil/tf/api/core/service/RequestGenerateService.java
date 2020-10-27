@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class RequestGenerateService {
 
-    public List generate(Job job, JobDetail jobDetail) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, InstantiationException, NoSuchMethodException {
+    public List regressionGenerate(Job job, JobDetail jobDetail) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, InstantiationException, NoSuchMethodException {
         List list=new ArrayList();
         if (jobDetail.getParams().isEmpty()&&!StringUtils.isEmpty(job.getDataProvider())){
             Class dataProviderClass=Class.forName(job.getDataProvider());
@@ -30,6 +30,11 @@ public class RequestGenerateService {
         }
 
 
+        return list;
+    }
+
+    public List intregrationGenerate(Job job,JobDetail jobDetail){
+        List list=new ArrayList();
         return list;
     }
 }
