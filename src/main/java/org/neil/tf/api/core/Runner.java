@@ -3,6 +3,7 @@ package org.neil.tf.api.core;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.neil.tf.api.core.service.RequestService;
 import org.neil.tf.api.core.service.VariableMangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -45,6 +47,7 @@ public class Runner {
     public void run(Variables variables,String environmentConfig, String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         JSONObject environmentVariable = JSON.parseObject(environmentConfig);
         job = initService.initJobConfig(environmentConfig, jobConfig);
+        initService.runInitMethod(job.getInitMethod());
         variables = variableMangeService.initVariable(variables,environmentVariable, job);
         String type = job.getType();
         switch (type){
@@ -73,13 +76,18 @@ public class Runner {
     public void integrationStart(Job job,Variables variables) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
         JSONArray jobArray=job.getTestsuite();
         JobDetail jobDetail=new JobDetail(jobArray.getJSONObject(0));
-        List firstRequests=requestGenerateService.intregrationGenerate(job,jobDetail);
-        for (int i=0;i<firstRequests.size();i++){
-            JSONObject jsonObject= (JSONObject) firstRequests.get(i);
-            requestService.sendRequest(jsonObject);
-            for (int j=1;j<jobArray.size();j++){
-
+        if (!StringUtils.isEmpty(job.getDataProvider())){
+            List firstRequests=requestGenerateService.providerGenerate(job.getDataProvider());
+            for (int i=0;i<firstRequests.size();i++){
+                JSONObject jsonObject=(JSONObject)firstRequests.get(i);
+                jsonObject=requestGenerateService.addJobDetail(jsonObject,jobDetail);
+                HttpResponse response=requestService.sendRequest(jsonObject);
+                for (int j=1;j<jobArray.size();j++){
+                    jobDetail=new JobDetail(jobArray.getJSONObject(j));
+                }
             }
+        }else {
+
         }
     }
 }
