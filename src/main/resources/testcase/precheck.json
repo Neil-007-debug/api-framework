@@ -1,14 +1,13 @@
 {
   "name": "precheck job create template",
   "description": "",
-  "baseUrl": "https://core.qa.bulk.refinitiv.com",
-  "type": "regression",
+  "baseUrl": "",
+  "type": "integration",
   "dataProvider": "",
   "variables": {},
   "headers": {
   },
   "initMethod": [
-    "setHttpClient"
   ],
   "testsuite": [
     {
@@ -19,7 +18,7 @@
         },
         "headers": {
         },
-        "url": "${baseUrl}/jobs",
+        "url": "${url}/jobs",
         "method": "post"
       },
       "validate": [
@@ -38,7 +37,7 @@
         },
         "headers": {
         },
-        "url": "${baseUrl}/status/${jobId}",
+        "url": "${url}/status/${jobId}",
         "method": "get"
       },
       "validate": {

@@ -50,14 +50,8 @@ public class RequestGenerateService {
     }
 
     public JSONObject addJobDetail(JSONObject jsonObject,JobDetail jobDetail){
-        if (!StringUtils.isEmpty(jobDetail.getName())){
-            jsonObject.put(RequestConstant.REQUEST_NAME.getName(),jobDetail.getName());
-        }
         if (!StringUtils.isEmpty(jobDetail.getUrl())){
             jsonObject.put(RequestConstant.REQUEST_URL.getName(),jobDetail.getUrl());
-        }
-        if (!StringUtils.isEmpty(jobDetail.getExtract())){
-            jsonObject.put(RequestConstant.REQUEST_EXTRACT.getName(),jobDetail.getExtract());
         }
         if (!jobDetail.getParams().isEmpty()){
             jsonObject.put(RequestConstant.REQUEST_PARAMS.getName(),jobDetail.getParams());
@@ -70,9 +64,6 @@ public class RequestGenerateService {
         }
         if (!StringUtils.isEmpty(jobDetail.getType())){
             jsonObject.put(RequestConstant.REQUEST_TYPE.getName(),jobDetail.getType());
-        }
-        if (!jobDetail.getValidate().isEmpty()){
-            jsonObject.put(RequestConstant.REQUEST_VALIDATE.getName(),jobDetail.getValidate());
         }
         return jsonObject;
     }
