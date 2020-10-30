@@ -50,21 +50,23 @@ public class RequestGenerateService {
     }
 
     public JSONObject addJobDetail(JSONObject jsonObject,JobDetail jobDetail){
+        JSONObject object=new JSONObject();
+        object.put(RequestConstant.REQUEST_PARAMS.getName(),jsonObject);
         if (!StringUtils.isEmpty(jobDetail.getUrl())){
-            jsonObject.put(RequestConstant.REQUEST_URL.getName(),jobDetail.getUrl());
+            object.put(RequestConstant.REQUEST_URL.getName(),jobDetail.getUrl());
         }
         if (!jobDetail.getParams().isEmpty()){
-            jsonObject.put(RequestConstant.REQUEST_PARAMS.getName(),jobDetail.getParams());
+            object.put(RequestConstant.REQUEST_PARAMS.getName(),jobDetail.getParams());
         }
         if (!StringUtils.isEmpty(jobDetail.getHeaders())){
-            jsonObject.put(RequestConstant.REQUEST_HEADERS.getName(),jobDetail.getHeaders());
+            object.put(RequestConstant.REQUEST_HEADERS.getName(),jobDetail.getHeaders());
         }
         if (!StringUtils.isEmpty(jobDetail.getMethod())){
-            jsonObject.put(RequestConstant.REQUEST_METHOD.getName(),jobDetail.getMethod());
+            object.put(RequestConstant.REQUEST_METHOD.getName(),jobDetail.getMethod());
         }
         if (!StringUtils.isEmpty(jobDetail.getType())){
-            jsonObject.put(RequestConstant.REQUEST_TYPE.getName(),jobDetail.getType());
+            object.put(RequestConstant.REQUEST_TYPE.getName(),jobDetail.getType());
         }
-        return jsonObject;
+        return object;
     }
 }
