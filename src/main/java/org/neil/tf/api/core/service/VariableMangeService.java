@@ -72,5 +72,9 @@ public class VariableMangeService {
         return object;
     }
 
+    public void convertVariable(){
+
+    }
+
 }
 

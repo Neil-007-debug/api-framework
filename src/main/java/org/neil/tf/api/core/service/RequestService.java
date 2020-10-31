@@ -16,7 +16,7 @@ public class RequestService {
 
     public HttpResponse sendRequest(JSONObject jsonObject) throws UnirestException {
         String url=jsonObject.getString(RequestConstant.REQUEST_URL.getName());
-        String body=jsonObject.getString(RequestConstant.REQUEST_BODY.getName());
+        String body=jsonObject.getJSONObject(RequestConstant.REQUEST_PARAMS.getName()).toJSONString();
         Map header=jsonObject.getJSONObject(RequestConstant.REQUEST_HEADERS.getName());
         String method=jsonObject.getString(RequestConstant.REQUEST_METHOD.getName());
         switch (method) {
