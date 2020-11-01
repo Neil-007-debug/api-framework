@@ -12,6 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @SpringBootApplication
@@ -21,11 +24,11 @@ public class ApiApplication {
         SpringApplication.run(ApiApplication.class, args);
         Runner runner = (Runner) ApplicationContextGetBeanHelper.getBean("Runner");
         String environmentConfigFile = "testcase/environment.json";
-        String jobConfigFile = "testcase/precheck.json";
-        Variables globalVariables = new Variables();
+        List jobList = new ArrayList();
+        jobList.add("testcase/precheck.json");
         try {
-            runner.run(globalVariables, JsonReaderUtil.readJsonFile(environmentConfigFile), JsonReaderUtil.readJsonFile(jobConfigFile));
-        }catch (Exception e){
+            runner.run(environmentConfigFile, jobList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

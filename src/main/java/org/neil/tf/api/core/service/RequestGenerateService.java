@@ -65,6 +65,9 @@ public class RequestGenerateService {
         if (!StringUtils.isEmpty(jobDetail.getType())){
             jsonObject.put(RequestConstant.REQUEST_TYPE.getName(),jobDetail.getType());
         }
+        if (!StringUtils.isEmpty(jobDetail.getLoopConfig())){
+            jsonObject.put(RequestConstant.REQUEST_LOOPCONFIG.getName(),jobDetail.getLoopConfig());
+        }
         return jsonObject;
     }
 }

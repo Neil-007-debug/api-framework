@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 @Service
 public class InitService {
 
-    public Job initJobConfig(String environmentConfig, String jobConfig) {
+    public Job initJobConfig(String jobConfig) {
         Job job = JSONObject.toJavaObject((JSON) JSONObject.parseObject(jobConfig), Job.class);
         return job;
     }

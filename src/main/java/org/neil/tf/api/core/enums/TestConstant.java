@@ -8,7 +8,10 @@ package org.neil.tf.api.core.enums;
 public enum TestConstant {
 
     TEST_TYPE_REGRESSION("regression"),
-    TEST_TYPE_INTEGRATION("integration");
+    TEST_TYPE_INTEGRATION("integration"),
+    TEST_RESULT_NAME("result"),
+    TEST_RESULT_SUCCEEDED("succeeded"),
+    TEST_RESULT_FAILED("failed");
 
 
     private String name;

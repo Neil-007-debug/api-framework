@@ -18,7 +18,11 @@ public enum RequestConstant {
     REQUEST_NAME("name"),
     REQUEST_TYPE("type"),
     REQUEST_VALIDATE("validate"),
-    REQUEST_LOOPCONFIG("loopConfig");
+    REQUEST_LOOPCONFIG("loopConfig"),
+    REQUEST_RESPONSE("response"),
+    REQUEST_GET("get"),
+    REQUEST_TYPE_SYNC("sync"),
+    REQUEST_TYPE_ASYNC("async");
 
 
     private String name;

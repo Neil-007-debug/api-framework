@@ -1,6 +1,7 @@
 package org.neil.tf.api.core.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.mashape.unirest.http.HttpResponse;
@@ -9,7 +10,6 @@ import org.mvel2.MVEL;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,18 +18,24 @@ import java.util.Map;
 @Service
 public class ValidateService {
 
-    public Boolean validate(HttpResponse httpResponse,String expression){
+    public Boolean validate(HttpResponse httpResponse, JSONArray expressions){
         Map vars=new HashMap();
         vars.put("response",httpResponse);
         String body= (String) httpResponse.getBody();
+        vars.put("bodyString",body);
         try {
             JSONObject jsonObject=JSON.parseObject(body);
-            vars.put("body",jsonObject);
+            vars.put("bodyObject",jsonObject);
         }catch (JSONException e){
             e.printStackTrace();
-            vars.put("body",body);
         }
-        Boolean result=(Boolean) MVEL.eval(expression,vars);
+        Boolean result=null;
+        for (int i=0;i<expressions.size();i++){
+            result=MVEL.evalToBoolean(expressions.getString(i),vars);
+        }
+        if (result.equals(false)){
+            System.exit(1);
+        }
         return result;
     }
 
