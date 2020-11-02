@@ -28,11 +28,12 @@ public class VariableMangeService {
 
     private final static Logger logger = LoggerFactory.getLogger(VariableMangeService.class);
 
-    public Variables initEnvironmentVariables(String environmentFile){
-        Variables variables=new Variables();
+    public Variables initEnvironmentVariables(String environmentFile) {
+        Variables variables = new Variables();
         variables.setEnvironmentVariables(JSON.parseObject(JsonReaderUtil.readJsonFile(environmentFile)));
         return variables;
     }
+
     public Variables initVariable(Variables variables, Job job) {
 
         JSONObject startVariables = job.getVariables();
@@ -84,32 +85,32 @@ public class VariableMangeService {
         return object;
     }
 
-    public String convertVariable(String value,Variables variables){
-        String regex="\\$\\{\\S*?}";
-        Pattern pattern=Pattern.compile(regex);
-        Matcher matcher=pattern.matcher(value);
-        while (matcher.find()){
-            String v=matcher.group();
-            String realValue= String.valueOf(getValueByName(variables,v.substring(2,v.lastIndexOf("}"))));
-            value.replace(v,realValue);
+    public String convertVariable(String value, Variables variables) {
+        String regex = "\\$\\{\\S*?}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            String v = matcher.group();
+            String realValue = String.valueOf(getValueByName(variables, v.substring(2, v.lastIndexOf("}"))));
+            value = value.replace(v, realValue);
         }
         return value;
     }
 
-    public Variables extractVariables(Variables variable, HttpResponse httpResponse, JobDetail jobDetail){
-        JSONObject extract=jobDetail.getExtract();
-        String body= (String) httpResponse.getBody();
-        JSONObject variables=new JSONObject();
+    public Variables extractVariables(Variables variable, HttpResponse httpResponse, JobDetail jobDetail) {
+        JSONObject extract = jobDetail.getExtract();
+        String body = (String) httpResponse.getBody();
+        JSONObject variables = new JSONObject();
         try {
-            Object document= Configuration.defaultConfiguration().jsonProvider().parse(body);
-            for (String key:extract.keySet()){
-                Object value=JsonPath.read(document,extract.getString(key));
-                variables.put(key,value);
+            Object document = Configuration.defaultConfiguration().jsonProvider().parse(body);
+            for (String key : extract.keySet()) {
+                Object value = JsonPath.read(document, extract.getString(key));
+                variables.put(key, value);
             }
-        }catch (JsonPathException e){
+        } catch (JsonPathException e) {
             e.printStackTrace();
-        }finally {
-            addProcessVariables(variable,variables);
+        } finally {
+            addProcessVariables(variable, variables);
         }
         return variable;
     }
