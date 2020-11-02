@@ -70,16 +70,16 @@ public class Runner {
         String type = job.getType();
         switch (type) {
             case "regression":
-                jsonArray = regressionStart(job, variables);
+                jsonArray = regressionStart(job);
                 break;
             case "integration":
-                jsonArray = integrationStart(job, variables);
+                jsonArray = integrationStart(job);
                 break;
         }
         return jsonArray;
     }
 
-    public JSONArray regressionStart(Job job, Variables variables) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
+    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
         JSONArray jobArray = job.getTestsuite();
         for (int i = 0; i < jobArray.size(); i++) {
             JSONObject logDetail = new JSONObject();
@@ -94,7 +94,7 @@ public class Runner {
         return null;
     }
 
-    public JSONArray integrationStart(Job job, Variables variables) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
+    public JSONArray integrationStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
         JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
         JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
