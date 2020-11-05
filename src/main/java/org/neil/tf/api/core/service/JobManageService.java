@@ -23,10 +23,10 @@ public class JobManageService {
             jobDetail.setUrl(jsonObject.getString(RequestConstant.REQUEST_URL.getName()));
         }
         if (jsonObject.containsKey(RequestConstant.REQUEST_PARAMS.getName())) {
-            jobDetail.setParams(jsonObject.getJSONObject(RequestConstant.REQUEST_URL.getName()));
+            jobDetail.setParams(jsonObject.getJSONObject(RequestConstant.REQUEST_PARAMS.getName()));
         }
         if (jsonObject.containsKey(RequestConstant.REQUEST_HEADERS.getName())) {
-            jobDetail.setHeaders(jsonObject.getJSONObject(RequestConstant.REQUEST_URL.getName()));
+            jobDetail.setHeaders(jsonObject.getJSONObject(RequestConstant.REQUEST_HEADERS.getName()));
         }
         if (jsonObject.containsKey(RequestConstant.REQUEST_VALIDATE.getName())) {
             JSONArray jsonArray= jobDetail.getValidate();
