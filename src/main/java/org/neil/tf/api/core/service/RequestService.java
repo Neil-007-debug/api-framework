@@ -10,6 +10,7 @@ import org.neil.tf.api.core.bean.Variables;
 import org.neil.tf.api.core.enums.RequestConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -32,7 +33,9 @@ public class RequestService {
             for (String key : params.keySet()) {
                 p += key + "=" + params.get(key) + "&";
             }
-            url = url + "?" + p.substring(0, p.lastIndexOf("&"));
+            if (!StringUtils.isEmpty(p)){
+                url = url + "?" + p.substring(0, p.lastIndexOf("&"));
+            }
         }
         String type=jobDetail.getType();
         if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)){
