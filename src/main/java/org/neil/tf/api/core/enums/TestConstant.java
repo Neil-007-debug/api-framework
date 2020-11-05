@@ -11,7 +11,10 @@ public enum TestConstant {
     TEST_TYPE_INTEGRATION("integration"),
     TEST_RESULT_NAME("result"),
     TEST_RESULT_SUCCEEDED("succeeded"),
-    TEST_RESULT_FAILED("failed");
+    TEST_RESULT_FAILED("failed"),
+    TEST_RESPONSE("response"),
+    TEST_BODYSTRING("bodyString"),
+    TEST_BODYJSONOBJECT("bodyObject");
 
 
     private String name;

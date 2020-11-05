@@ -22,7 +22,10 @@ public enum RequestConstant {
     REQUEST_RESPONSE("response"),
     REQUEST_GET("get"),
     REQUEST_TYPE_SYNC("sync"),
-    REQUEST_TYPE_ASYNC("async");
+    REQUEST_TYPE_ASYNC("async"),
+    REQUEST_INTERVAL("interval"),
+    REQUEST_MOSTWAITINGTIME("mostwaitingtime"),
+    REQUEST_ENDCONDITION("endcondition");
 
 
     private String name;

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.awaitility.Awaitility;
 import org.neil.tf.api.core.bean.JobDetail;
 import org.neil.tf.api.core.bean.Variables;
 import org.neil.tf.api.core.enums.RequestConstant;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
+import static org.awaitility.Awaitility.await;
 
 @Service
 public class RequestService {
@@ -20,9 +25,12 @@ public class RequestService {
     @Autowired
     private VariableManageService variableManageService;
 
+    @Autowired
+    private ValidateService validateService;
+
     private HttpResponse httpResponse;
 
-    public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException {
+    public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getParams().toJSONString(), variables);
         JSONObject params = JSON.parseObject(body);
@@ -33,17 +41,23 @@ public class RequestService {
             for (String key : params.keySet()) {
                 p += key + "=" + params.get(key) + "&";
             }
-            if (!StringUtils.isEmpty(p)){
+            if (!StringUtils.isEmpty(p)) {
                 url = url + "?" + p.substring(0, p.lastIndexOf("&"));
             }
         }
-        String type=jobDetail.getType();
-        if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)){
-            JSONObject loopConfig=jobDetail.getLoopConfig();
-//            String endCondition=loopConfig.getString()
+        String type = jobDetail.getType();
+        if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)) {
+            JSONObject loopConfig = jobDetail.getLoopConfig();
+            Long mostTime = loopConfig.getLong(RequestConstant.REQUEST_MOSTWAITINGTIME.getName());
+            Long interval = loopConfig.getLong(RequestConstant.REQUEST_INTERVAL.getName());
+            String endCondition = loopConfig.getString(RequestConstant.REQUEST_ENDCONDITION.getName());
+            httpResponse = send(method, url, header, body);
+            await().atMost(mostTime, TimeUnit.MINUTES)
+                    .pollInterval(interval, TimeUnit.SECONDS)
+                    .until(() -> validateService.judgeEnd(httpResponse, endCondition));
+        } else {
             httpResponse = send(method, url, header, body);
         }
-        httpResponse = send(method, url, header, body);
         logDetail.put(RequestConstant.REQUEST_URL.getName(), url);
         logDetail.put(RequestConstant.REQUEST_HEADERS.getName(), header);
         logDetail.put(RequestConstant.REQUEST_BODY.getName(), body);
