@@ -6,7 +6,6 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.mashape.unirest.http.HttpResponse;
-import org.junit.jupiter.api.Test;
 import org.neil.tf.api.core.bean.Job;
 import org.neil.tf.api.core.bean.JobDetail;
 import org.neil.tf.api.core.bean.Variables;
@@ -24,9 +23,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class VariableMangeService {
+public class VariableManageService {
 
-    private final static Logger logger = LoggerFactory.getLogger(VariableMangeService.class);
+    private final static Logger logger = LoggerFactory.getLogger(VariableManageService.class);
 
     public Variables initEnvironmentVariables(String environmentFile) {
         Variables variables = new Variables();

@@ -10,7 +10,6 @@ import org.neil.tf.api.core.bean.Variables;
 import org.neil.tf.api.core.enums.RequestConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -18,16 +17,16 @@ import java.util.Map;
 public class RequestService {
 
     @Autowired
-    private VariableMangeService variableMangeService;
+    private VariableManageService variableManageService;
 
     private HttpResponse httpResponse;
 
-    public JSONObject sendRequest(JSONObject jsonObject, Variables variables, JSONObject logDetail) throws UnirestException {
-        String url = variableMangeService.convertVariable(jsonObject.getString(RequestConstant.REQUEST_URL.getName()), variables);
-        String body = variableMangeService.convertVariable(jsonObject.getJSONObject(RequestConstant.REQUEST_PARAMS.getName()).toJSONString(), variables);
+    public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException {
+        String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
+        String body = variableManageService.convertVariable(jobDetail.getParams().toJSONString(), variables);
         JSONObject params = JSON.parseObject(body);
-        Map header = jsonObject.getJSONObject(RequestConstant.REQUEST_HEADERS.getName());
-        String method = jsonObject.getString(RequestConstant.REQUEST_METHOD.getName());
+        Map header = jobDetail.getHeaders();
+        String method = jobDetail.getMethod();
         if (RequestConstant.REQUEST_GET.getName().equals(method)) {
             String p = "";
             for (String key : params.keySet()) {
@@ -35,13 +34,13 @@ public class RequestService {
             }
             url = url + "?" + p.substring(0, p.lastIndexOf("&"));
         }
-        String type=jsonObject.getString(RequestConstant.REQUEST_TYPE.getName());
+        String type=jobDetail.getType();
         if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)){
-            JSONObject loopConfig=jsonObject.getJSONObject(RequestConstant.REQUEST_LOOPCONFIG.getName());
+            JSONObject loopConfig=jobDetail.getLoopConfig();
 //            String endCondition=loopConfig.getString()
-            httpResponse = send(method, url, header, params, body);
+            httpResponse = send(method, url, header, body);
         }
-        httpResponse = send(method, url, header, params, body);
+        httpResponse = send(method, url, header, body);
         logDetail.put(RequestConstant.REQUEST_URL.getName(), url);
         logDetail.put(RequestConstant.REQUEST_HEADERS.getName(), header);
         logDetail.put(RequestConstant.REQUEST_BODY.getName(), body);
@@ -50,7 +49,7 @@ public class RequestService {
         return logDetail;
     }
 
-    public HttpResponse send(String method, String url, Map header, JSONObject params, String body) throws UnirestException {
+    public HttpResponse send(String method, String url, Map header, String body) throws UnirestException {
         switch (method) {
             case "get":
                 httpResponse = Unirest.get(url)
@@ -77,14 +76,5 @@ public class RequestService {
                 break;
         }
         return httpResponse;
-    }
-
-    public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(RequestConstant.REQUEST_URL.getName(), jobDetail.getUrl());
-        jsonObject.put(RequestConstant.REQUEST_PARAMS.getName(), jobDetail.getParams());
-        jsonObject.put(RequestConstant.REQUEST_METHOD.getName(), jobDetail.getMethod());
-        jsonObject.put(RequestConstant.REQUEST_HEADERS.getName(), jobDetail.getHeaders());
-        return sendRequest(jsonObject, variables, logDetail);
     }
 }

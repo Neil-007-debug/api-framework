@@ -63,4 +63,5 @@ public class JobDetail {
         setValidate(jsonObject.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName()));
         setLoopConfig(jsonObject.getJSONObject(RequestConstant.REQUEST_LOOPCONFIG.getName()));
     }
+
 }

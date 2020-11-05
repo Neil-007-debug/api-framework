@@ -1,6 +1,5 @@
 package org.neil.tf.api.core;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mashape.unirest.http.HttpResponse;
@@ -29,7 +28,7 @@ public class Runner {
     private InitService initService;
 
     @Autowired
-    private VariableMangeService variableMangeService;
+    private VariableManageService variableManageService;
 
     @Autowired
     private RequestGenerateService requestGenerateService;
@@ -39,6 +38,9 @@ public class Runner {
 
     @Autowired
     private ValidateService validateService;
+
+    @Autowired
+    private JobManageService jobManageService;
 
     @Getter
     @Setter
@@ -54,7 +56,7 @@ public class Runner {
 
     public void run(String environmentFile, List caseList) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         report = new Report();
-        variables = variableMangeService.initEnvironmentVariables(environmentFile);
+        variables = variableManageService.initEnvironmentVariables(environmentFile);
         for (int i = 0; i < caseList.size(); i++) {
             String jobFileName = (String) caseList.get(i);
             String jobConfig = JsonReaderUtil.readJsonFile(jobFileName);
@@ -66,7 +68,7 @@ public class Runner {
         JSONArray jsonArray = new JSONArray();
         job = initService.initJobConfig(jobConfig);
         initService.runInitMethod(job.getInitMethod());
-        variables = variableMangeService.initVariable(variables, job);
+        variables = variableManageService.initVariable(variables, job);
         String type = job.getType();
         switch (type) {
             case "regression":
@@ -88,7 +90,7 @@ public class Runner {
             List requestInformationList = requestGenerateService.regressionGenerate(job, jobDetail);
             for (int j = 0; j < requestInformationList.size(); j++) {
                 JSONObject jsonObject = (JSONObject) requestInformationList.get(j);
-                requestService.sendRequest(jsonObject, variables, logDetail);
+                requestService.sendRequest(jobDetail, variables, logDetail);
             }
         }
         return null;
@@ -103,11 +105,11 @@ public class Runner {
             for (int i = 0; i < firstRequests.size(); i++) {
                 JSONArray logDetailArray = new JSONArray();
                 JSONObject jsonObject = (JSONObject) firstRequests.get(i);
-                jsonObject = requestGenerateService.addJobDetail(jsonObject, jobDetail);
+                jobDetail=jobManageService.addVariable(jobDetail,jsonObject);
                 JSONObject logDetail = new JSONObject();
-                logDetail = requestService.sendRequest(jsonObject, variables, logDetail);
+                logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
-                variables = variableMangeService.extractVariables(variables, response, jobDetail);
+                variables = variableManageService.extractVariables(variables, response, jobDetail);
                 if (validateService.validate(response, jobDetail.getValidate())) {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                 } else {
@@ -119,7 +121,7 @@ public class Runner {
                     jobDetail = new JobDetail(jobArray.getJSONObject(j));
                     logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                     HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
-                    variables = variableMangeService.extractVariables(variables, httpResponse, jobDetail);
+                    variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
                     if (validateService.validate(httpResponse, jobDetail.getValidate())) {
                         logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                     } else {
