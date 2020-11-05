@@ -103,8 +103,13 @@ public class VariableManageService {
         try {
             Object document = Configuration.defaultConfiguration().jsonProvider().parse(body);
             for (String key : extract.keySet()) {
-                Object value = JsonPath.read(document, extract.getString(key));
-                variables.put(key, value);
+                if (extract.getString(key).startsWith("$")){
+                    Object value = JsonPath.read(document, extract.getString(key));
+                    variables.put(key, value);
+                }else {
+                    variables.put(key,extract.getString(key));
+                }
+
             }
         } catch (JsonPathException e) {
             e.printStackTrace();
