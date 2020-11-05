@@ -110,7 +110,7 @@ public class Runner {
                 logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 variables = variableManageService.extractVariables(variables, response, jobDetail);
-                if (validateService.validate(response, jobDetail.getValidate())) {
+                if (validateService.validate(response, jobDetail.getValidate(),variables)) {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                 } else {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
@@ -122,7 +122,7 @@ public class Runner {
                     logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                     HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                     variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
-                    if (validateService.validate(httpResponse, jobDetail.getValidate())) {
+                    if (validateService.validate(httpResponse, jobDetail.getValidate(),variables)) {
                         logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                     } else {
                         logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());

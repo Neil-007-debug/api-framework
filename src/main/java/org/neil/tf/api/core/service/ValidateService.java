@@ -8,6 +8,8 @@ import com.mashape.unirest.http.HttpResponse;
 import org.junit.jupiter.api.Test;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.ExecutableAccessor;
+import org.neil.tf.api.core.bean.Variables;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +20,13 @@ import java.util.Map;
 @Service
 public class ValidateService {
 
-    public Boolean validate(HttpResponse httpResponse, JSONArray expressions){
+    @Autowired
+    private VariableManageService variableManageService;
+
+    public Boolean validate(HttpResponse httpResponse, JSONArray expressions, Variables variables){
+        if (expressions.isEmpty()){
+            return true;
+        }
         Map vars=new HashMap();
         vars.put("response",httpResponse);
         String body= (String) httpResponse.getBody();
@@ -31,6 +39,7 @@ public class ValidateService {
         }
         Boolean result=null;
         for (int i=0;i<expressions.size();i++){
+            String expression=variableManageService.convertVariable(expressions.getString(i),variables);
             result=MVEL.evalToBoolean(expressions.getString(i),vars);
         }
         if (result.equals(false)){
