@@ -40,7 +40,7 @@ public class ValidateService {
         Boolean result=null;
         for (int i=0;i<expressions.size();i++){
             String expression=variableManageService.convertVariable(expressions.getString(i),variables);
-            result=MVEL.evalToBoolean(expressions.getString(i),vars);
+            result=MVEL.evalToBoolean(expression,vars);
         }
         if (result.equals(false)){
             System.exit(1);
