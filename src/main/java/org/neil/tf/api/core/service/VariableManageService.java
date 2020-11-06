@@ -85,7 +85,7 @@ public class VariableManageService {
     }
 
     public String convertVariable(String value, Variables variables) {
-        if (!StringUtils.isEmpty(value)){
+        if (!StringUtils.isEmpty(value)) {
             String regex = "\\$\\{\\S*?}";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(value);
@@ -100,16 +100,19 @@ public class VariableManageService {
 
     public Variables extractVariables(Variables variable, HttpResponse httpResponse, JobDetail jobDetail) {
         JSONObject extract = jobDetail.getExtract();
+        if (null == extract || extract.isEmpty()) {
+            return variable;
+        }
         String body = (String) httpResponse.getBody();
         JSONObject variables = new JSONObject();
         try {
             Object document = Configuration.defaultConfiguration().jsonProvider().parse(body);
             for (String key : extract.keySet()) {
-                if (extract.getString(key).startsWith("$")){
+                if (extract.getString(key).startsWith("$")) {
                     Object value = JsonPath.read(document, extract.getString(key));
                     variables.put(key, value);
-                }else {
-                    variables.put(key,extract.getString(key));
+                } else {
+                    variables.put(key, extract.getString(key));
                 }
 
             }
