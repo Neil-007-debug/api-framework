@@ -99,18 +99,18 @@ public class Runner {
     public JSONArray integrationStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException {
         JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
-        JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
         if (!StringUtils.isEmpty(job.getDataProvider())) {
+            JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
             List firstRequests = requestGenerateService.providerGenerate(job.getDataProvider());
             for (int i = 0; i < firstRequests.size(); i++) {
                 JSONArray logDetailArray = new JSONArray();
                 JSONObject jsonObject = (JSONObject) firstRequests.get(i);
-                jobDetail=jobManageService.addVariable(jobDetail,jsonObject);
+                jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
                 JSONObject logDetail = new JSONObject();
                 logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 variables = variableManageService.extractVariables(variables, response, jobDetail);
-                if (validateService.validate(response, jobDetail.getValidate(),variables)) {
+                if (validateService.validate(response, jobDetail.getValidate(), variables)) {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                 } else {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
@@ -122,7 +122,7 @@ public class Runner {
                     logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
                     HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                     variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
-                    if (validateService.validate(httpResponse, jobDetail.getValidate(),variables)) {
+                    if (validateService.validate(httpResponse, jobDetail.getValidate(), variables)) {
                         logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                     } else {
                         logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
@@ -132,7 +132,21 @@ public class Runner {
                 logArray.add(logDetailArray);
             }
         } else {
-
+            JSONArray logDetailArray = new JSONArray();
+            for (int i = 0; i < jobArray.size(); i++) {
+                JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(i));
+                JSONObject logDetail = new JSONObject();
+                logDetail = requestService.sendRequest(jobDetail, variables, logDetail);
+                HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
+                variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
+                if (validateService.validate(httpResponse, jobDetail.getValidate(), variables)) {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
+                } else {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
+                }
+                logDetailArray.add(logDetail);
+            }
+            logArray.add(logDetailArray);
         }
         return logArray;
     }

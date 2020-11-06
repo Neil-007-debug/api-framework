@@ -34,6 +34,9 @@ public class RequestService {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
         JSONObject params = JSON.parseObject(variableManageService.convertVariable(jobDetail.getParams().toJSONString(), variables));
+        if (StringUtils.isEmpty(body)&&!params.isEmpty()){
+            body=params.toJSONString();
+        }
         Map header = jobDetail.getHeaders();
         String method = jobDetail.getMethod();
         if (RequestConstant.REQUEST_GET.getName().equals(method)) {
@@ -53,10 +56,11 @@ public class RequestService {
             String endCondition = loopConfig.getString(RequestConstant.REQUEST_ENDCONDITION.getName());
             httpResponse = send(method, url, header, body);
             String finalUrl=url;
+            String finalBody=body;
             await().atMost(mostTime, TimeUnit.MINUTES)
                     .pollInterval(interval, TimeUnit.SECONDS)
                     .until(() -> {
-                        httpResponse=send(method,finalUrl,header,body);
+                        httpResponse=send(method,finalUrl,header,finalBody);
                         return validateService.judgeEnd(httpResponse, endCondition);
                     });
         } else {
