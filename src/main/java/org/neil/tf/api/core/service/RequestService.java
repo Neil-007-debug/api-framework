@@ -33,25 +33,25 @@ public class RequestService {
     public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
+        Map header = jobDetail.getHeaders();
+        String method = jobDetail.getMethod();
+        String type = jobDetail.getType();
         JSONObject params = jobDetail.getParams();
         if (null != params) {
             params = JSON.parseObject(variableManageService.convertVariable(params.toJSONString(), variables));
+            if (RequestConstant.REQUEST_GET.getName().equals(method)) {
+                String p = "";
+                for (String key : params.keySet()) {
+                    p += key + "=" + params.get(key) + "&";
+                }
+                if (!StringUtils.isEmpty(p)) {
+                    url = url + "?" + p.substring(0, p.lastIndexOf("&"));
+                }
+            }
         }
         if (StringUtils.isEmpty(body) && null != params && !params.isEmpty()) {
             body = params.toJSONString();
         }
-        Map header = jobDetail.getHeaders();
-        String method = jobDetail.getMethod();
-        if (RequestConstant.REQUEST_GET.getName().equals(method)) {
-            String p = "";
-            for (String key : params.keySet()) {
-                p += key + "=" + params.get(key) + "&";
-            }
-            if (!StringUtils.isEmpty(p)) {
-                url = url + "?" + p.substring(0, p.lastIndexOf("&"));
-            }
-        }
-        String type = jobDetail.getType();
         if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)) {
             JSONObject loopConfig = jobDetail.getLoopConfig();
             Long mostTime = loopConfig.getLong(RequestConstant.REQUEST_MOSTWAITINGTIME.getName());
