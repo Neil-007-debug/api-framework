@@ -66,10 +66,11 @@ public class RequestService {
             httpResponse = send(method, url, header, body);
             String finalUrl = url;
             String finalBody = body;
+            Map finalHeader = header;
             await().atMost(mostTime, TimeUnit.MINUTES)
                     .pollInterval(interval, TimeUnit.SECONDS)
                     .until(() -> {
-                        httpResponse = send(method, finalUrl, header, finalBody);
+                        httpResponse = send(method, finalUrl, finalHeader, finalBody);
                         return validateService.judgeEnd(httpResponse, endCondition);
                     });
         } else {
