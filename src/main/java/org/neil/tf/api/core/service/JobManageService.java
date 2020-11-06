@@ -25,6 +25,9 @@ public class JobManageService {
         if (jsonObject.containsKey(RequestConstant.REQUEST_PARAMS.getName())) {
             jobDetail.setParams(jsonObject.getJSONObject(RequestConstant.REQUEST_PARAMS.getName()));
         }
+        if (jsonObject.containsKey(RequestConstant.REQUEST_BODY.getName())){
+            jobDetail.setBody(jsonObject.getString(RequestConstant.REQUEST_BODY.getName()));
+        }
         if (jsonObject.containsKey(RequestConstant.REQUEST_HEADERS.getName())) {
             jobDetail.setHeaders(jsonObject.getJSONObject(RequestConstant.REQUEST_HEADERS.getName()));
         }
