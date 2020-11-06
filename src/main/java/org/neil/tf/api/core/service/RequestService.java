@@ -32,8 +32,8 @@ public class RequestService {
 
     public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
-        String body = variableManageService.convertVariable(jobDetail.getParams().toJSONString(), variables);
-        JSONObject params = JSON.parseObject(body);
+        String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
+        JSONObject params = JSON.parseObject(variableManageService.convertVariable(jobDetail.getParams().toJSONString(),variables));
         Map header = jobDetail.getHeaders();
         String method = jobDetail.getMethod();
         if (RequestConstant.REQUEST_GET.getName().equals(method)) {

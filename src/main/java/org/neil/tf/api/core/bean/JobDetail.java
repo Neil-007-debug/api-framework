@@ -21,6 +21,10 @@ public class JobDetail {
 
     @Getter
     @Setter
+    private String body;
+
+    @Getter
+    @Setter
     private JSONObject params;
 
     @Getter
@@ -55,6 +59,7 @@ public class JobDetail {
         JSONObject request=jsonObject.getJSONObject(RequestConstant.REQUEST_REQUEST.getName());
         setHeaders(request.getJSONObject(RequestConstant.REQUEST_HEADERS.getName()));
         setMethod(request.getString(RequestConstant.REQUEST_METHOD.getName()));
+        setBody(jsonObject.getString(RequestConstant.REQUEST_BODY.getName()));
         setParams(request.getJSONObject(RequestConstant.REQUEST_PARAMS.getName()));
         setUrl(request.getString(RequestConstant.REQUEST_URL.getName()));
         setExtract(jsonObject.getJSONObject(RequestConstant.REQUEST_EXTRACT.getName()));
