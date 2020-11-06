@@ -85,13 +85,15 @@ public class VariableManageService {
     }
 
     public String convertVariable(String value, Variables variables) {
-        String regex = "\\$\\{\\S*?}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-            String v = matcher.group();
-            String realValue = String.valueOf(getValueByName(variables, v.substring(2, v.lastIndexOf("}"))));
-            value = value.replace(v, realValue);
+        if (!StringUtils.isEmpty(value)){
+            String regex = "\\$\\{\\S*?}";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(value);
+            while (matcher.find()) {
+                String v = matcher.group();
+                String realValue = String.valueOf(getValueByName(variables, v.substring(2, v.lastIndexOf("}"))));
+                value = value.replace(v, realValue);
+            }
         }
         return value;
     }
