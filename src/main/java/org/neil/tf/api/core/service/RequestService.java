@@ -34,10 +34,10 @@ public class RequestService {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
         JSONObject params = jobDetail.getParams();
-        if (!params.isEmpty()) {
+        if (null != params) {
             params = JSON.parseObject(variableManageService.convertVariable(params.toJSONString(), variables));
         }
-        if (StringUtils.isEmpty(body) && !params.isEmpty()) {
+        if (StringUtils.isEmpty(body) && null != params && !params.isEmpty()) {
             body = params.toJSONString();
         }
         Map header = jobDetail.getHeaders();
