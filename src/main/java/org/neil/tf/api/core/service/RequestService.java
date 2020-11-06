@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,9 @@ public class RequestService {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
         Map header = jobDetail.getHeaders();
+        if (null == header) {
+            header = new HashMap();
+        }
         String method = jobDetail.getMethod();
         String type = jobDetail.getType();
         JSONObject params = jobDetail.getParams();
@@ -51,6 +55,8 @@ public class RequestService {
         }
         if (StringUtils.isEmpty(body) && null != params && !params.isEmpty()) {
             body = params.toJSONString();
+        } else {
+            body = "";
         }
         if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)) {
             JSONObject loopConfig = jobDetail.getLoopConfig();
