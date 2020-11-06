@@ -54,7 +54,7 @@ public class Runner {
     @Setter
     private Report report;
 
-    public void run(String environmentFile, List caseList) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void run(String environmentFile, List caseList) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException {
         report = new Report();
         variables = variableManageService.initEnvironmentVariables(environmentFile);
         for (int i = 0; i < caseList.size(); i++) {
@@ -64,7 +64,7 @@ public class Runner {
         }
     }
 
-    public JSONArray execute(String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public JSONArray execute(String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException {
         JSONArray jsonArray = new JSONArray();
         job = initService.initJobConfig(jobConfig);
         initService.runInitMethod(job.getInitMethod());
@@ -81,7 +81,7 @@ public class Runner {
         return jsonArray;
     }
 
-    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
+    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException {
         JSONArray jobArray = job.getTestsuite();
         for (int i = 0; i < jobArray.size(); i++) {
             JSONObject logDetail = new JSONObject();
@@ -96,7 +96,7 @@ public class Runner {
         return null;
     }
 
-    public JSONArray integrationStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException {
+    public JSONArray integrationStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException {
         JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
         JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
