@@ -33,9 +33,12 @@ public class RequestService {
     public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
-        JSONObject params = JSON.parseObject(variableManageService.convertVariable(jobDetail.getParams().toJSONString(), variables));
-        if (StringUtils.isEmpty(body)&&!params.isEmpty()){
-            body=params.toJSONString();
+        JSONObject params = jobDetail.getParams();
+        if (!params.isEmpty()) {
+            params = JSON.parseObject(variableManageService.convertVariable(params.toJSONString(), variables));
+        }
+        if (StringUtils.isEmpty(body) && !params.isEmpty()) {
+            body = params.toJSONString();
         }
         Map header = jobDetail.getHeaders();
         String method = jobDetail.getMethod();
@@ -55,12 +58,12 @@ public class RequestService {
             Long interval = loopConfig.getLong(RequestConstant.REQUEST_INTERVAL.getName());
             String endCondition = loopConfig.getString(RequestConstant.REQUEST_ENDCONDITION.getName());
             httpResponse = send(method, url, header, body);
-            String finalUrl=url;
-            String finalBody=body;
+            String finalUrl = url;
+            String finalBody = body;
             await().atMost(mostTime, TimeUnit.MINUTES)
                     .pollInterval(interval, TimeUnit.SECONDS)
                     .until(() -> {
-                        httpResponse=send(method,finalUrl,header,finalBody);
+                        httpResponse = send(method, finalUrl, header, finalBody);
                         return validateService.judgeEnd(httpResponse, endCondition);
                     });
         } else {
