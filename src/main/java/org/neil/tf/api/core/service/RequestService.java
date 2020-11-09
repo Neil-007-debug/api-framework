@@ -10,11 +10,14 @@ import org.neil.tf.api.core.bean.JobDetail;
 import org.neil.tf.api.core.bean.Variables;
 import org.neil.tf.api.core.enums.RequestConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -31,7 +34,8 @@ public class RequestService {
 
     private HttpResponse httpResponse;
 
-    public JSONObject sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
+    @Async
+    public Future<JSONObject> sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
         Map header = jobDetail.getHeaders();
@@ -81,7 +85,7 @@ public class RequestService {
         logDetail.put(RequestConstant.REQUEST_BODY.getName(), body);
         logDetail.put(RequestConstant.REQUEST_METHOD.getName(), method);
         logDetail.put(RequestConstant.REQUEST_RESPONSE.getName(), httpResponse);
-        return logDetail;
+        return new AsyncResult<>(logDetail);
     }
 
     public HttpResponse send(String method, String url, Map header, String body) throws UnirestException {
