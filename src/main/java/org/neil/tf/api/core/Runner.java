@@ -57,7 +57,7 @@ public class Runner {
     @Setter
     private Report report;
 
-    public void run(String environmentFile, List caseList) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException, ExecutionException {
+    public void run(String environmentFile, List caseList) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException, ExecutionException, CloneNotSupportedException {
         report = new Report();
         variables = variableManageService.initEnvironmentVariables(environmentFile);
         for (int i = 0; i < caseList.size(); i++) {
@@ -67,7 +67,7 @@ public class Runner {
         }
     }
 
-    public JSONArray execute(String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException, ExecutionException {
+    public JSONArray execute(String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException, ExecutionException, CloneNotSupportedException {
         JSONArray jsonArray = new JSONArray();
         job = initService.initJobConfig(jobConfig);
         initService.runInitMethod(job.getInitMethod());
@@ -84,7 +84,7 @@ public class Runner {
         return jsonArray;
     }
 
-    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException, ExecutionException {
+    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException, ExecutionException, CloneNotSupportedException {
         JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
         String dataProvider = job.getDataProvider();
@@ -112,7 +112,7 @@ public class Runner {
         } else {
             List requests = requestGenerateService.providerGenerate(dataProvider);
             for (int i = 0; i < requests.size(); i++) {
-                JobDetail jobDetail = new JobDetail(job.getTestsuite().getJSONObject(0));
+                JobDetail jobDetail = (JobDetail) new JobDetail(job.getTestsuite().getJSONObject(0)).clone();
                 JSONObject jsonObject = (JSONObject) requests.get(i);
                 jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
                 Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);

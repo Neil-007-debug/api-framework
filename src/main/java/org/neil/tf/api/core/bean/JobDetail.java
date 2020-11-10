@@ -71,6 +71,9 @@ public class JobDetail implements Cloneable{
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        JobDetail jobDetail= (JobDetail) super.clone();
+        jobDetail.setValidate((JSONArray) validate.clone());
+        jobDetail.setExtract((JSONObject) extract.clone());
+        return jobDetail;
     }
 }
