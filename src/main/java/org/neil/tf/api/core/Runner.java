@@ -112,7 +112,7 @@ public class Runner {
         } else {
             List requests = requestGenerateService.providerGenerate(dataProvider);
             JobDetail jobDetail = new JobDetail(job.getTestsuite().getJSONObject(0));
-            for (int i = 0; i < reaults.size(); i++) {
+            for (int i = 0; i < requests.size(); i++) {
                 JSONObject jsonObject = (JSONObject) requests.get(i);
                 jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
                 Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);
