@@ -99,7 +99,7 @@ public class Runner {
                 Future future = (Future) reaults.get(i);
                 JSONObject logDetail = (JSONObject) future.get();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
-                JSONArray validate=logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
+                JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
                 if (validateService.validate(response, validate, variables)) {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
                 } else {
@@ -111,8 +111,9 @@ public class Runner {
 
         } else {
             List requests = requestGenerateService.providerGenerate(dataProvider);
+            JSONObject baseJobdetail = job.getTestsuite().getJSONObject(0);
             for (int i = 0; i < requests.size(); i++) {
-                JobDetail jobDetail = new JobDetail(job.getTestsuite().getJSONObject(0));
+                JobDetail jobDetail = new JobDetail((JSONObject) baseJobdetail.clone());
                 JSONObject jsonObject = (JSONObject) requests.get(i);
                 jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
                 Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);
