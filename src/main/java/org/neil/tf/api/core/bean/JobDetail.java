@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.neil.tf.api.core.enums.RequestConstant;
 
 @NoArgsConstructor
-public class JobDetail {
+public class JobDetail implements Cloneable{
 
     @Getter
     @Setter
@@ -69,4 +69,8 @@ public class JobDetail {
         setLoopConfig(jsonObject.getJSONObject(RequestConstant.REQUEST_LOOPCONFIG.getName()));
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
