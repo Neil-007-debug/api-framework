@@ -61,8 +61,6 @@ public class RequestService {
         }
         if (StringUtils.isEmpty(body) && null != params && !params.isEmpty()) {
             body = params.toJSONString();
-        } else {
-            body = "";
         }
         if (RequestConstant.REQUEST_TYPE_ASYNC.getName().equals(type)) {
             JSONObject loopConfig = jobDetail.getLoopConfig();
