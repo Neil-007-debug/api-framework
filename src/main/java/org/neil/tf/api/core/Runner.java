@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -83,19 +84,55 @@ public class Runner {
         return jsonArray;
     }
 
-    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException {
+    public JSONArray regressionStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException, ExecutionException {
+        JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
-        for (int i = 0; i < jobArray.size(); i++) {
-            JSONObject logDetail = new JSONObject();
-            JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(i));
-            jobDetail.setName(jobDetail.getName() + "--" + i);
-            List requestInformationList = requestGenerateService.regressionGenerate(job, jobDetail);
-            for (int j = 0; j < requestInformationList.size(); j++) {
-                JSONObject jsonObject = (JSONObject) requestInformationList.get(j);
-                requestService.sendRequest(jobDetail, variables, logDetail);
+        String dataProvider = job.getDataProvider();
+        List reaults = new ArrayList();
+        if (StringUtils.isEmpty(dataProvider)) {
+            for (int i = 0; i < jobArray.size(); i++) {
+                JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(i));
+                Future future = requestService.sendRequest(jobDetail, variables);
+                reaults.add(future);
+            }
+            for (int i = 0; i < reaults.size(); i++) {
+                Future future = (Future) reaults.get(i);
+                JSONObject logDetail = (JSONObject) future.get();
+                HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
+                JSONArray validate=logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
+                if (validateService.validate(response, validate, variables)) {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
+                } else {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
+
+                }
+                logArray.add(logDetail);
+            }
+
+        } else {
+            List requests = requestGenerateService.providerGenerate(dataProvider);
+            JobDetail jobDetail = new JobDetail(job.getTestsuite().getJSONObject(0));
+            for (int i = 0; i < reaults.size(); i++) {
+                JSONObject jsonObject = (JSONObject) requests.get(i);
+                jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
+                Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);
+                reaults.add(future);
+            }
+            for (int i = 0; i < reaults.size(); i++) {
+                Future future = (Future) reaults.get(i);
+                JSONObject logDetail = (JSONObject) future.get();
+                HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
+                JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
+                if (validateService.validate(response, validate, variables)) {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_SUCCEEDED.getName());
+                } else {
+                    logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
+                }
+                logArray.add(logDetail);
             }
         }
-        return null;
+
+        return logArray;
     }
 
     public JSONArray integrationStart(Job job) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, UnirestException, InterruptedException, ExecutionException {
@@ -108,9 +145,8 @@ public class Runner {
                 JSONArray logDetailArray = new JSONArray();
                 JSONObject jsonObject = (JSONObject) firstRequests.get(i);
                 jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
-                JSONObject logDetail = new JSONObject();
-                Future<JSONObject> future = requestService.sendRequest(jobDetail, variables, logDetail);
-                logDetail = future.get();
+                Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);
+                JSONObject logDetail = future.get();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 variables = variableManageService.extractVariables(variables, response, jobDetail);
                 if (validateService.validate(response, jobDetail.getValidate(), variables)) {
@@ -120,9 +156,8 @@ public class Runner {
                 }
                 logDetailArray.add(logDetail);
                 for (int j = 1; j < jobArray.size(); j++) {
-                    logDetail = new JSONObject();
                     jobDetail = new JobDetail(jobArray.getJSONObject(j));
-                    future = requestService.sendRequest(jobDetail, variables, logDetail);
+                    future = requestService.sendRequest(jobDetail, variables);
                     logDetail = future.get();
                     HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                     variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
@@ -139,9 +174,8 @@ public class Runner {
             JSONArray logDetailArray = new JSONArray();
             for (int i = 0; i < jobArray.size(); i++) {
                 JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(i));
-                JSONObject logDetail = new JSONObject();
-                Future<JSONObject> future = requestService.sendRequest(jobDetail, variables, logDetail);
-                logDetail=future.get();
+                Future<JSONObject> future = requestService.sendRequest(jobDetail, variables);
+                JSONObject logDetail = future.get();
                 HttpResponse httpResponse = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 variables = variableManageService.extractVariables(variables, httpResponse, jobDetail);
                 if (validateService.validate(httpResponse, jobDetail.getValidate(), variables)) {

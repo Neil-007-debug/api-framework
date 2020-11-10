@@ -39,12 +39,17 @@ public class ValidateService {
             e.printStackTrace();
         }
         Boolean result = null;
-        for (int i = 0; i < expressions.size(); i++) {
-            String expression = variableManageService.convertVariable(expressions.getString(i), variables);
-            result = MVEL.evalToBoolean(expression, vars);
-        }
-        if (result.equals(false)) {
-            System.exit(1);
+        try {
+            for (int i = 0; i < expressions.size(); i++) {
+                String expression = variableManageService.convertVariable(expressions.getString(i), variables);
+                result = MVEL.evalToBoolean(expression, vars);
+                if (false==result){
+                    break;
+                }
+            }
+        }catch (Exception e){
+            result=false;
+            e.printStackTrace();
         }
         return result;
     }

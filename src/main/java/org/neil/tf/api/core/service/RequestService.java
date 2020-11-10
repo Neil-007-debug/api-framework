@@ -35,7 +35,9 @@ public class RequestService {
     private HttpResponse httpResponse;
 
     @Async
-    public Future<JSONObject> sendRequest(JobDetail jobDetail, Variables variables, JSONObject logDetail) throws UnirestException, InterruptedException {
+    public Future<JSONObject> sendRequest(JobDetail jobDetail, Variables variables) throws UnirestException, InterruptedException {
+        JSONObject logDetail = new JSONObject();
+        jobDetail.setValidate(JSON.parseArray(variableManageService.convertVariable(jobDetail.getValidate().toJSONString(),variables)));
         String url = variableManageService.convertVariable(jobDetail.getUrl(), variables);
         String body = variableManageService.convertVariable(jobDetail.getBody(), variables);
         Map header = jobDetail.getHeaders();
@@ -85,6 +87,7 @@ public class RequestService {
         logDetail.put(RequestConstant.REQUEST_BODY.getName(), body);
         logDetail.put(RequestConstant.REQUEST_METHOD.getName(), method);
         logDetail.put(RequestConstant.REQUEST_RESPONSE.getName(), httpResponse);
+        logDetail.put(RequestConstant.REQUEST_VALIDATE.getName(),jobDetail.getValidate());
         return new AsyncResult<>(logDetail);
     }
 
