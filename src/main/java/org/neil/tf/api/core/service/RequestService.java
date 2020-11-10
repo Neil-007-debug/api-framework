@@ -86,6 +86,7 @@ public class RequestService {
         logDetail.put(RequestConstant.REQUEST_METHOD.getName(), method);
         logDetail.put(RequestConstant.REQUEST_RESPONSE.getName(), httpResponse);
         logDetail.put(RequestConstant.REQUEST_VALIDATE.getName(),jobDetail.getValidate());
+        logDetail.put(RequestConstant.REQUEST_NAME.getName(),jobDetail.getName());
         return new AsyncResult<>(logDetail);
     }
 
