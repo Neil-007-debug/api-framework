@@ -91,6 +91,9 @@ public class RequestService {
     }
 
     public HttpResponse send(String method, String url, Map header, String body) throws UnirestException {
+        if (null==body){
+            body="";
+        }
         switch (method) {
             case "get":
                 httpResponse = Unirest.get(url)
