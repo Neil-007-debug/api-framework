@@ -65,6 +65,7 @@ public class Runner {
             String jobConfig = JsonReaderUtil.readJsonFile(jobFileName);
             report.getTotalLogs().put(jobFileName, execute(jobConfig));
         }
+        report.dealReport();
     }
 
     public JSONArray execute(String jobConfig) throws NoSuchMethodException, InstantiationException, UnirestException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException, ExecutionException, CloneNotSupportedException {
@@ -98,6 +99,7 @@ public class Runner {
             for (int i = 0; i < reaults.size(); i++) {
                 Future future = (Future) reaults.get(i);
                 JSONObject logDetail = (JSONObject) future.get();
+                JSONArray logDetailArray=new JSONArray();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
                 if (validateService.validate(response, validate, variables)) {
@@ -106,7 +108,8 @@ public class Runner {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
 
                 }
-                logArray.add(logDetail);
+                logDetailArray.add(logDetail);
+                logArray.add(logDetailArray);
             }
 
         } else {
@@ -121,6 +124,7 @@ public class Runner {
             for (int i = 0; i < reaults.size(); i++) {
                 Future future = (Future) reaults.get(i);
                 JSONObject logDetail = (JSONObject) future.get();
+                JSONArray logDetailArray=new JSONArray();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
                 if (validateService.validate(response, validate, variables)) {
@@ -128,10 +132,10 @@ public class Runner {
                 } else {
                     logDetail.put(TestConstant.TEST_RESULT_NAME.getName(), TestConstant.TEST_RESULT_FAILED.getName());
                 }
-                logArray.add(logDetail);
+                logDetailArray.add(logDetail);
+                logArray.add(logDetailArray);
             }
         }
-
         return logArray;
     }
 
