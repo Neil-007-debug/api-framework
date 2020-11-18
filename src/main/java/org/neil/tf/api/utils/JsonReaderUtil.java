@@ -11,18 +11,15 @@ public class JsonReaderUtil {
     private final static Logger logger= LoggerFactory.getLogger(JsonReaderUtil.class);
 
     public static String readJsonFile(String fileName) {
-        String path= JsonReaderUtil.class.getClassLoader().getResource(fileName).getPath();
+        InputStream inputStream= JsonReaderUtil.class.getClassLoader().getResourceAsStream(fileName);
         String jsonStr = "";
         try {
-            File jsonFile = new File(path);
-            FileReader fileReader = new FileReader(jsonFile);
-            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            Reader reader = new InputStreamReader(inputStream,"utf-8");
             int ch = 0;
             StringBuffer sb = new StringBuffer();
             while ((ch = reader.read()) != -1) {
                 sb.append((char) ch);
             }
-            fileReader.close();
             reader.close();
             logger.debug("read json file succeed");
             jsonStr = sb.toString();

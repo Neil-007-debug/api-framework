@@ -63,9 +63,10 @@ public class VariableManageService {
         Object object = null;
         if (variables.getProcessVariables().containsKey(VariableType.VARIABLE_TYPE_PROCESSVARIABLELIST.getName())) {
             List list = (List) variables.getProcessVariables().get(VariableType.VARIABLE_TYPE_PROCESSVARIABLELIST.getName());
-            for (Object jsonObject : list) {
-                if (((JSONObject) jsonObject).containsKey(name)) {
-                    object = ((JSONObject) jsonObject).get(name);
+            for (int i = list.size() - 1; i >= 0; i--) {
+                JSONObject jsonObject = (JSONObject) list.get(i);
+                if ((jsonObject).containsKey(name)) {
+                    object = (jsonObject).get(name);
                     return object;
                 }
             }

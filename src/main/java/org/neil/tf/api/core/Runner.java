@@ -99,7 +99,7 @@ public class Runner {
             for (int i = 0; i < reaults.size(); i++) {
                 Future future = (Future) reaults.get(i);
                 JSONObject logDetail = (JSONObject) future.get();
-                JSONArray logDetailArray=new JSONArray();
+                JSONArray logDetailArray = new JSONArray();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
                 if (validateService.validate(response, validate, variables)) {
@@ -124,7 +124,7 @@ public class Runner {
             for (int i = 0; i < reaults.size(); i++) {
                 Future future = (Future) reaults.get(i);
                 JSONObject logDetail = (JSONObject) future.get();
-                JSONArray logDetailArray=new JSONArray();
+                JSONArray logDetailArray = new JSONArray();
                 HttpResponse response = (HttpResponse) logDetail.get(RequestConstant.REQUEST_RESPONSE.getName());
                 JSONArray validate = logDetail.getJSONArray(RequestConstant.REQUEST_VALIDATE.getName());
                 if (validateService.validate(response, validate, variables)) {
@@ -143,9 +143,9 @@ public class Runner {
         JSONArray logArray = new JSONArray();
         JSONArray jobArray = job.getTestsuite();
         if (!StringUtils.isEmpty(job.getDataProvider())) {
-            JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
             List firstRequests = requestGenerateService.providerGenerate(job.getDataProvider());
             for (int i = 0; i < firstRequests.size(); i++) {
+                JobDetail jobDetail = new JobDetail(jobArray.getJSONObject(0));
                 JSONArray logDetailArray = new JSONArray();
                 JSONObject jsonObject = (JSONObject) firstRequests.get(i);
                 jobDetail = jobManageService.addVariable(jobDetail, jsonObject);
